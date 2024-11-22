@@ -7,30 +7,37 @@ import (
 	"os"
 )
 
-func Create(filename string) *os.File {
-	file, err := os.Create(fmt.Sprintf("%s.txt", filename))
+func Create(name string) *os.File {
+	file, err := os.Create(fmt.Sprintf("%s.txt", name))
 	if err != nil {
-		fmt.Printf("Can't create file %s\n", filename)
+		fmt.Printf("Can't create file %s\n", name)
 	}
 	return file
 }
 
-func Open(filename string) {
-	file, err := os.Open(fmt.Sprintf("./data/%s.txt", filename))
+func Open(name string) *[]byte {
+	file, err := os.Open(fmt.Sprintf("./data/%s.json", name))
 	if err != nil {
-		log.Fatalf("Can't open file %s\n", filename)
+		log.Fatalf("Can't open file %s\n", name)
 	}
 
 	defer file.Close()
 
 	data, err := io.ReadAll(file)
 	if err != nil {
-		log.Fatalf("Can't read file %s\n", filename)
+		log.Fatalf("Can't read file %s\n", name)
 	}
 
-	fmt.Println(string(data))
+	return &data
 }
 
-func Delete(filename string) {
+func Write(name string, data *[]byte) error {
+	if err := os.WriteFile(fmt.Sprintf("./data/%s.json", name), *data, 0644); err != nil {
+		return err
+	}
+	return nil
+}
+
+func Delete(name string) {
 
 }
