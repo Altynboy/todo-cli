@@ -13,8 +13,8 @@ func main() {
 	actions := []string{"list", "new", "update", "board"}
 	selIndex := 0
 
-	taskList := data.Read()
-
+	taskList := data.NewTodoData()
+	taskList.Init()
 	selIndex, ok := menu.SelectOption(actions)
 	if !ok {
 		return
@@ -23,20 +23,20 @@ func main() {
 	action := actions[selIndex]
 	switch action {
 	case "list":
-		data.Print(taskList)
+		taskList.Print()
 	case "new":
 		fmt.Println("New todo")
 		fmt.Println("Write todo descr:")
 		descr := helpers.ReadLine()
-		if ok := data.Write(taskList, descr); !ok {
+		if ok := taskList.Write(descr); !ok {
 			fmt.Println("cant write new task")
 		}
 		fmt.Println("New task successfully created")
-		newTaskList := data.Read()
-		data.Print(newTaskList)
+		taskList.Read()
+		taskList.Print()
 	case "update":
 		fmt.Println("Chose todo to update status:")
-		options := data.Options(taskList)
+		options := taskList.Options()
 		selIndex, ok = menu.SelectOption(*options)
 		if !ok {
 			return
@@ -46,14 +46,14 @@ func main() {
 		if !ok {
 			return
 		}
-		ok = data.Update(taskList, selIndex, task.Status(statusList[selStatus]))
+		ok = taskList.Update(selIndex, task.Status(statusList[selStatus]))
 		if !ok {
 			log.Fatalf("Can't update status for todo with id %d", selIndex)
 			return
 		}
-		fmt.Printf("Status %s succesfully setted for todo %q\n", statusList[selStatus], (*taskList)[selIndex].Descr)
-		data.Print(taskList)
+		fmt.Printf("Status %s succesfully setted for todo %q\n", statusList[selStatus], taskList.Tasks()[selIndex].Descr)
+		taskList.Print()
 	case "board":
-		data.Board(taskList)
+		taskList.Board()
 	}
 }

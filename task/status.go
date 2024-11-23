@@ -20,5 +20,5 @@ func (s Status) Validate() error {
 }
 
 func StatusOptions() []string {
-	return []string{string(StatusDone), string(StatusInProgress), string(StatusTodo)}
+	return []string{string(StatusTodo), string(StatusInProgress), string(StatusDone)}
 }

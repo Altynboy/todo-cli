@@ -2,9 +2,9 @@
   {
     "Id": 0,
     "Descr": "design",
-    "Status": "in-progress",
+    "Status": "done",
     "CreatedAt": "2024-11-23T00:50:52.821708+05:00",
-    "UpdatedAt": "2024-11-23T01:33:22.559176+05:00"
+    "UpdatedAt": "2024-11-23T23:34:02.027401+05:00"
   },
   {
     "Id": 1,
@@ -29,7 +29,7 @@
   },
   {
     "Id": 4,
-    "Descr": "test",
+    "Descr": "tdd",
     "Status": "done",
     "CreatedAt": "2024-11-23T01:35:16.29432+05:00",
     "UpdatedAt": "2024-11-23T01:35:36.111054+05:00"
@@ -43,9 +43,16 @@
   },
   {
     "Id": 6,
-    "Descr": "grpc",
+    "Descr": "grpcx",
     "Status": "todo",
     "CreatedAt": "2024-11-23T17:19:55.21883+05:00",
     "UpdatedAt": null
+  },
+  {
+    "Id": 7,
+    "Descr": "Add delete func",
+    "Status": "in-progress",
+    "CreatedAt": "2024-11-23T23:40:23.974082+05:00",
+    "UpdatedAt": "2024-11-23T23:40:35.156633+05:00"
   }
 ]

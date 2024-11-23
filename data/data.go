@@ -6,27 +6,45 @@ import (
 	"log"
 	"strings"
 	"todo-cli/file"
+	"todo-cli/helpers"
 	"todo-cli/task"
 )
 
-var filename = "data"
-
-func Read() *[]task.Task {
-	raw := file.Open(filename)
-	return file.Parse(raw)
+type TodoData struct {
+	tasks []task.Task
 }
 
-func Write(data *[]task.Task, descr string) bool {
-	newId := (*data)[len(*data)-1].Id + 1
-	if len(*data) < 1 {
+func NewTodoData() *TodoData {
+	return &TodoData{}
+}
+
+var filename = "data"
+
+func (t *TodoData) Init() {
+	t.Read()
+}
+
+func (t *TodoData) Tasks() []task.Task {
+	return t.tasks
+}
+
+func (t *TodoData) Read() {
+	raw := file.Open(filename)
+	t.tasks = *file.Parse(raw)
+}
+
+func (t *TodoData) Write(descr string) bool {
+	data := t.tasks
+	newId := data[len(data)-1].Id + 1
+	if len(data) < 1 {
 		newId = 0
 	}
 	new, ok := task.New(descr, newId)
 	if !ok {
 		log.Fatal("can't create new task")
 	}
-	*data = append(*data, *new)
-	newData, err := json.MarshalIndent(*data, "", "  ")
+	data = append(data, *new)
+	newData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		log.Fatalf("error while marshalling new data %s", err)
 		return false
@@ -40,14 +58,14 @@ func Write(data *[]task.Task, descr string) bool {
 	return true
 }
 
-func Update(data *[]task.Task, id int, status task.Status) bool {
-	ok := task.Update(&(*data)[id], status)
+func (t *TodoData) Update(id int, status task.Status) bool {
+	ok := task.Update(&(t.tasks)[id], status)
 	if !ok {
 		log.Fatal("cant update todo status")
 		return false
 	}
 
-	newData, err := json.MarshalIndent(*data, "", "  ")
+	newData, err := json.MarshalIndent(t.tasks, "", "  ")
 	if err != nil {
 		log.Fatalf("error while marshalling new data %s", err)
 		return false
@@ -61,32 +79,34 @@ func Update(data *[]task.Task, id int, status task.Status) bool {
 	return true
 }
 
-func Print(tasks *[]task.Task) {
-	if len(*tasks) < 1 {
+func (t *TodoData) Print() {
+	if len(t.tasks) < 1 {
 		fmt.Println("Todo list is empty")
 	}
-	for i, task := range *tasks {
-		fmt.Printf("%d. %s \t%s\n", i+1, task.Descr, task.Status)
+	fmt.Printf("   %-20s \t%s\n", "TITLE", "STATUS")
+	fmt.Println(strings.Repeat("-", 40))
+	for i, task := range t.tasks {
+		fmt.Printf("%d. %-20s \t%s\n", i+1, task.Descr, task.Status)
 	}
 }
 
-func Options(tasks *[]task.Task) *[]string {
-	if len(*tasks) < 1 {
+func (t *TodoData) Options() *[]string {
+	if len(t.tasks) < 1 {
 		fmt.Println("Todo list is empty")
 	}
-	options := make([]string, len(*tasks))
-	for i, task := range *tasks {
+	options := make([]string, len(t.tasks))
+	for i, task := range t.tasks {
 		options[i] = fmt.Sprintf("%d. %s \t%s", i+1, task.Descr, task.Status)
 	}
 	return &options
 }
 
-func Board(tasks *[]task.Task) {
+func (t *TodoData) Board() {
 	var todoTasks []task.Task
 	var inProgressTasks []task.Task
 	var doneTasks []task.Task
 
-	for _, el := range *tasks {
+	for _, el := range t.tasks {
 		switch el.Status {
 		case task.StatusTodo:
 			todoTasks = append(todoTasks, el)
@@ -97,8 +117,8 @@ func Board(tasks *[]task.Task) {
 		}
 	}
 
-	max := Max(len(todoTasks), len(inProgressTasks))
-	max = Max(max, len(doneTasks))
+	max := helpers.Max(len(todoTasks), len(inProgressTasks))
+	max = helpers.Max(max, len(doneTasks))
 
 	headers := task.StatusOptions()
 	fmt.Printf("   %-20s %-20s %-20s\n", headers[0], headers[1], headers[2])
@@ -117,30 +137,8 @@ func Board(tasks *[]task.Task) {
 		fmt.Printf("%d. ", i+1)
 
 		for _, col := range row {
-			fmt.Printf("%-*s ", 20, TrancuteOrWrap(col, 20))
+			fmt.Printf("%-*s ", 20, helpers.TrancuteOrWrap(col, 20))
 		}
 		fmt.Println()
 	}
-}
-
-func Max(a int, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func TrancuteOrWrap(text string, width int) string {
-	if len(text) <= width {
-		return text
-	}
-
-	var wrapped string
-	for len(text) > width {
-		wrapped += text[:width] + "\n"
-		text = text[width:]
-	}
-	wrapped += text
-
-	return wrapped
 }
