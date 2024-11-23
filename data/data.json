@@ -16,9 +16,9 @@
   {
     "Id": 2,
     "Descr": "prod",
-    "Status": "todo",
+    "Status": "in-progress",
     "CreatedAt": "2024-11-23T01:11:08.054563+05:00",
-    "UpdatedAt": null
+    "UpdatedAt": "2024-11-23T16:29:38.50217+05:00"
   },
   {
     "Id": 3,
@@ -37,8 +37,15 @@
   {
     "Id": 5,
     "Descr": "create architecture for app",
-    "Status": "in-progress",
+    "Status": "done",
     "CreatedAt": "2024-11-23T01:47:39.837309+05:00",
-    "UpdatedAt": "2024-11-23T01:47:56.599693+05:00"
+    "UpdatedAt": "2024-11-23T17:21:57.665942+05:00"
+  },
+  {
+    "Id": 6,
+    "Descr": "grpc",
+    "Status": "todo",
+    "CreatedAt": "2024-11-23T17:19:55.21883+05:00",
+    "UpdatedAt": null
   }
 ]

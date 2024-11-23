@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	actions := []string{"list", "new", "update"}
+	actions := []string{"list", "new", "update", "board"}
 	selIndex := 0
 
 	taskList := data.Read()
@@ -53,5 +53,7 @@ func main() {
 		}
 		fmt.Printf("Status %s succesfully setted for todo %q\n", statusList[selStatus], (*taskList)[selIndex].Descr)
 		data.Print(taskList)
+	case "board":
+		data.Board(taskList)
 	}
 }
