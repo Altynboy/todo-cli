@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	actions := []string{"list", "new", "update", "board"}
+	actions := []string{"list", "board", "new", "update", "delete"}
 	selIndex := 0
 
 	taskList := data.NewTodoData()
@@ -55,5 +55,28 @@ func main() {
 		taskList.Print()
 	case "board":
 		taskList.Board()
+	case "delete":
+	deleteTask:
+		fmt.Println("Chose todo to delete:")
+		options := taskList.Options()
+		selIndex, ok = menu.SelectOption(*options)
+		if !ok {
+			return
+		}
+		confirm := []string{"yes", "no"}
+		selConfirm, ok := menu.SelectOption(confirm)
+		if !ok {
+			return
+		}
+		if selConfirm == 1 {
+			goto deleteTask
+		}
+		ok = taskList.DeleteTask(selIndex)
+		if !ok {
+			log.Fatalf("Can't delete task with id %d", selIndex)
+			return
+		}
+		fmt.Printf("Task with id %d successfully deleted", selIndex)
+		taskList.Print()
 	}
 }

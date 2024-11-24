@@ -79,6 +79,7 @@ func (t *TodoData) Update(id int, status task.Status) bool {
 	return true
 }
 
+// TODO: fix long everlap text
 func (t *TodoData) Print() {
 	if len(t.tasks) < 1 {
 		fmt.Println("Todo list is empty")
@@ -141,4 +142,24 @@ func (t *TodoData) Board() {
 		}
 		fmt.Println()
 	}
+}
+
+func (t *TodoData) DeleteTask(index int) bool {
+	var ok bool
+	t.tasks, ok = helpers.DeleteElement(t.tasks, index)
+	if !ok {
+		return false
+	}
+	newData, err := json.MarshalIndent(t.tasks, "", "  ")
+	if err != nil {
+		log.Fatalf("error while marshalling new data %s", err)
+		return false
+	}
+
+	if err := file.Write(filename, &newData); err != nil {
+		log.Fatalf("error while writing to file %s", err)
+		return false
+	}
+
+	return true
 }
